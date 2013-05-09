@@ -1,6 +1,6 @@
 # CsvStreamer
 
-Streams CSV files one row at a time as live data is generated instead of waiting for the whole file to be created and then sent to the client.
+Streams CSV files one row at a time as live data is generated instead of waiting for the whole file to be created and then sent to the client. Works on most standard web servers including Nginx, Passenger, Unicorn, Thin etc., but does NOT work on Webrick.
 
 ## Installation
 
@@ -34,9 +34,16 @@ In your model:
 
 In your controller:
 
-    stream_csv('data.csv', MyModel.header_row) do |rows|
-      MyModel.find_each do |my_model|
-        rows << my_model.to_csv_row
+    Class ExportsController
+
+      def index
+
+        stream_csv('data.csv', MyModel.header_row) do |rows|
+          MyModel.find_each do |my_model|
+            rows << my_model.to_csv_row
+          end
+        end
+
       end
     end
 
